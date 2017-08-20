@@ -30,14 +30,16 @@ Plug 'junegunn/fzf.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'honza/vim-snippets'
-Plug 'roxma/nvim-completion-manager', { 'for': ['go', 'python'] }
-if !has('nvim')
-  Plug 'roxma/vim-hug-neovim-rpc', { 'for': ['go', 'python'] }
-endif
-Plug 'roxma/python-support.nvim', { 'for': 'python' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+function! BuildYCM(info)
+  if a:info.status == 'installed' || a:info.force
+    !./install.py --clang-completer --gocode-completer
+  endif
+endfunction
+Plug 'Valloric/YouCompleteMe', { 'for': ['c', 'cpp', 'go', 'python'], 'do': function('BuildYCM') }
+Plug 'rhysd/vim-clang-format', { 'for': ['c', 'cpp'] }
 call plug#end()
 
 " leader key mapped to ',' not default '\'
@@ -48,6 +50,10 @@ let g:go_list_type = "quickfix"
 
 " run go run with key '\r'
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
+
+autocmd FileType go map <C-n> :cnext<CR>
+autocmd FileType go map <C-m> :cprevious<CR>
+autocmd FileType go nnoremap <leader>a :cclose<CR>
 
 " go test timeout
 let g:go_test_timeout = '10s'
@@ -123,12 +129,20 @@ xnoremap <silent> <Leader>ag       y:Ag <C-R>"<CR>
 nnoremap <silent> <Leader>`        :Marks<CR>
 
 " use ultisnips engine
-let g:UltiSnipsSnippetsDir = $HOME.'/.vim/plugged/vim-snippets/UltiSnips'
+let g:UltiSnipsExpandTrigger="<nop>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:ulti_expand_or_jump_res = 0
+function ExpandSnippetOrCarriageReturn()
+    let snippet = UltiSnips#ExpandSnippetOrJump()
+    if g:ulti_expand_or_jump_res > 0
+        return snippet
+    else
+        return "\<CR>"
+    endif
+endfunction
+inoremap <expr> <CR> pumvisible() ? "\<C-R>=ExpandSnippetOrCarriageReturn()\<CR>" : "\<CR>"
 
-" nvim-completion-manager cr keymap
-imap <expr> <CR>  (pumvisible() ?  "\<c-y>\<Plug>(cm_inject_snippet)\<Plug>(expand_or_nl)" : "\<CR>")
-" here assuming ultisnips default expand key is tab
-imap <expr> <Plug>(expand_or_nl) (has_key(v:completed_item,'snippet')?"\<tab>":"\<CR>")
 
 " for python completions
 let g:python_support_python2_require = 0
@@ -150,8 +164,8 @@ nnoremap <silent> <Leader>tt :NERDTreeToggle<cr>
 
 " undotree
 if has("persistent_undo")
-    set undodir=~/.undodir/
-    set undofile
+  set undodir=~/.undodir/
+  set undofile
 endif
 let g:undotree_WindowLayout = 2
 nnoremap U :UndotreeToggle<CR>
@@ -159,3 +173,13 @@ nnoremap U :UndotreeToggle<CR>
 " \gt | gitgutter
 let g:gitgutter_enabled = 0
 nnoremap <silent> <Leader>gt :GitGutterToggle<cr>
+
+" ycm
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_autoclose_preview_window_after_completion = 1
+autocmd FileType c,cpp,go,python nnoremap <buffer> ]d :YcmCompleter GoTo<CR>
+autocmd FileType c,cpp,go nnoremap <buffer> K  :YcmCompleter GetType<CR>
+
+" clang format
+let g:clang_format#style_options = {"BasedOnStyle": "LLVM", "IndentWidth": 4}
+autocmd FileType c,cpp ClangFormatAutoEnable
