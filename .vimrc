@@ -35,11 +35,13 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 function! BuildYCM(info)
   if a:info.status == 'installed' || a:info.force
-    !./install.py --clang-completer --gocode-completer
+    !./install.py --clang-completer --gocode-completer --racer-completer
   endif
 endfunction
-Plug 'Valloric/YouCompleteMe', { 'for': ['c', 'cpp', 'go', 'python'], 'do': function('BuildYCM') }
+Plug 'Valloric/YouCompleteMe', { 'for': ['c', 'cpp', 'go', 'python', 'rust'], 'do': function('BuildYCM') }
 Plug 'rhysd/vim-clang-format', { 'for': ['c', 'cpp'] }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'vim-syntastic/syntastic', { 'for': ['rust'] }
 call plug#end()
 
 " leader key mapped to ',' not default '\'
@@ -177,9 +179,28 @@ nnoremap <silent> <Leader>gt :GitGutterToggle<cr>
 " ycm
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_completion = 1
-autocmd FileType c,cpp,go,python nnoremap <buffer> ]d :YcmCompleter GoTo<CR>
+autocmd FileType c,cpp,go,python,rust nnoremap <buffer> ]d :YcmCompleter GoTo<CR>
 autocmd FileType c,cpp,go nnoremap <buffer> K  :YcmCompleter GetType<CR>
 
 " clang format
 let g:clang_format#style_options = {"BasedOnStyle": "LLVM", "IndentWidth": 4}
 autocmd FileType c,cpp ClangFormatAutoEnable
+
+" rust format
+let g:ycm_rust_src_path = substitute(system('rustc --print sysroot'),'\n\+$','', '') . "/lib/rustlib/src/rust/src"
+if v:shell_error
+  echom "failed when rustc --print sysroot"
+endif
+let g:rustfmt_autosave = 1
+autocmd FileType rust map <C-n> :lnext<CR>
+autocmd FileType rust map <C-m> :lprevious<CR>
+autocmd FileType rust nnoremap <leader>a :lclose<CR>
+
+" syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_rust_checkers = ['rustc']
+
+" vim: set expandtab sw=2:
