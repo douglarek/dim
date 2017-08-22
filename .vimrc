@@ -41,7 +41,8 @@ endfunction
 Plug 'Valloric/YouCompleteMe', { 'for': ['c', 'cpp', 'go', 'python', 'rust'], 'do': function('BuildYCM') }
 Plug 'rhysd/vim-clang-format', { 'for': ['c', 'cpp'] }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'vim-syntastic/syntastic', { 'for': ['rust'] }
+Plug 'vim-syntastic/syntastic', { 'for': ['python', 'rust'] }
+Plug 'tell-k/vim-autopep8', { 'for': ['python'] }
 call plug#end()
 
 " leader key mapped to ',' not default '\'
@@ -178,6 +179,7 @@ nnoremap <silent> <Leader>gt :GitGutterToggle<cr>
 
 " ycm
 let g:ycm_confirm_extra_conf = 0
+let g:ycm_always_populate_location_list = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 autocmd FileType c,cpp,go,python,rust nnoremap <buffer> ]d :YcmCompleter GoTo<CR>
 autocmd FileType c,cpp,go nnoremap <buffer> K  :YcmCompleter GetType<CR>
@@ -194,7 +196,16 @@ endif
 let g:rustfmt_autosave = 1
 
 " syntastic
+let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_rust_checkers = ['cargo']
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_python_checker_args = '--max-line-length=119'
+
+" autopep8
+let g:autopep8_max_line_length = 99
+let g:autopep8_pep8_passes = 119
+let g:autopep8_disable_show_diff = 1
+autocmd BufWritePost *.py :call Autopep8()
 
 " vim: set expandtab sw=2:
