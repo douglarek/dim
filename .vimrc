@@ -187,7 +187,7 @@ let g:clang_format#style_options = {"BasedOnStyle": "LLVM", "IndentWidth": 4}
 autocmd FileType c,cpp ClangFormatAutoEnable
 
 " rust format
-let g:ycm_rust_src_path = substitute(system('rustc --print sysroot'),'\n\+$','', '') . "/lib/rustlib/src/rust/src"
+let g:ycm_rust_src_path = substitute(system('rustc --print sysroot'), '\n\+$', '', '') . "/lib/rustlib/src/rust/src"
 if v:shell_error
   echom "failed when rustc --print sysroot"
 endif
@@ -201,6 +201,6 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
-let g:syntastic_rust_checkers = ['rustc']
+let g:syntastic_rust_checkers = ['cargo']
 
 " vim: set expandtab sw=2:
