@@ -25,8 +25,6 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'joshdick/onedark.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'airblade/vim-gitgutter'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'honza/vim-snippets'
@@ -43,6 +41,11 @@ Plug 'rhysd/vim-clang-format', { 'for': ['c', 'cpp'] }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 Plug 'vim-syntastic/syntastic', { 'for': ['python', 'rust'] }
 Plug 'tell-k/vim-autopep8', { 'for': ['python'] }
+Plug 'tpope/vim-surround'
+Plug 'easymotion/vim-easymotion'
+Plug 'raimondi/delimitmate'
+Plug 'mileszs/ack.vim'
+Plug 'terryma/vim-multiple-cursors'
 call plug#end()
 
 " leader key mapped to ',' not default '\'
@@ -113,23 +116,6 @@ autocmd BufEnter * silent! EnableStripWhitespaceOnSave
 
 " cd to current file path automatically
 autocmd BufEnter * if expand("%:p:h") !~ '^/tmp' | silent! lcd %:p:h | endif
-
-" \\ | FZF
-if has('nvim')
-  let $FZF_DEFAULT_OPTS .= ' --inline-info'
-  " let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
-endif
-
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
-nnoremap <silent> <Leader>C        :Colors<CR>
-nnoremap <silent> <Leader><Enter>  :Buffers<CR>
-nnoremap <silent> <Leader>ag       :Ag <C-R><C-W><CR>
-nnoremap <silent> <Leader>AG       :Ag <C-R><C-A><CR>
-xnoremap <silent> <Leader>ag       y:Ag <C-R>"<CR>
-nnoremap <silent> <Leader>`        :Marks<CR>
 
 " use ultisnips engine
 let g:UltiSnipsExpandTrigger="<nop>"
@@ -207,5 +193,10 @@ let g:autopep8_max_line_length = 99
 let g:autopep8_pep8_passes = 119
 let g:autopep8_disable_show_diff = 1
 autocmd BufWritePost *.py :call Autopep8()
+
+" ack
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 
 " vim: set expandtab sw=2:
