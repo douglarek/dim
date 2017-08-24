@@ -1,7 +1,7 @@
-# nvimrc
+# dim : Douglarek's Neovim Distribution
 
-A simple neovim settings collection.
+dim is a distribution of neovim plugins and resources for Neovim and VimR.
 
 ```sh
-$ curl -s https://raw.githubusercontent.com/douglarek/nvimrc/master/install.sh | sh
+$ curl -s https://raw.githubusercontent.com/douglarek/dim/master/install.sh | sh
 ```
