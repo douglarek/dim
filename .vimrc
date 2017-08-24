@@ -4,6 +4,10 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 " vim-plug
+if !has('python3')
+  echo "ensure you have installed python3 and execute `pip install neovim`"
+  finish
+endif
 call plug#begin('~/.vim/plugged')
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries', 'on': [] }
 Plug 'AndrewRadev/splitjoin.vim'
@@ -34,10 +38,16 @@ Plug 'raimondi/delimitmate'
 Plug 'mileszs/ack.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'zchee/deoplete-go', { 'do': 'make', 'on': [] }
 call plug#end()
 
+" vim auto save
 set autowrite
+" enable mac delete key
 set backspace=2
+" close complete preview
+set completeopt-=preview
+" open at the same line number I closed it at last time
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 " cd to current file path automatically
 autocmd BufEnter * if expand("%:p:h") !~ '^/tmp' | silent! lcd %:p:h | endif
@@ -123,6 +133,13 @@ function! SetClang()
 endfunction
 autocmd FileType c,cpp call SetClang()
 
+" deoplete-go
+function! SetDeopleteGo()
+  set completeopt+=noinsert
+  set completeopt+=noselect
+  call plug#load('deoplete-go')
+endfunction
+
 " vim-go
 function! SetGolang()
   " quickfix keymap
@@ -180,6 +197,7 @@ function! SetGolang()
   " let g:go_auto_sameids = 1
 
   call plug#load('vim-go')
+  call SetDeopleteGo()
 endfunction
 autocmd FileType go call SetGolang()
 
