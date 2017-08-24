@@ -33,6 +33,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'raimondi/delimitmate'
 Plug 'mileszs/ack.vim'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 call plug#end()
 
 set autowrite
@@ -230,5 +231,8 @@ autocmd FileType python call SetPython()
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
 
 " vim: set expandtab sw=2:
