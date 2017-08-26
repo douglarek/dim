@@ -8,6 +8,8 @@ if !has('python3')
   echo "ensure you have installed python3 and execute `pip install neovim`"
   finish
 endif
+" disable python 2 support
+let g:loaded_python_provider = 1
 call plug#begin('~/.vim/plugged')
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries', 'on': [] }
 Plug 'AndrewRadev/splitjoin.vim'
