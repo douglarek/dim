@@ -231,7 +231,7 @@ function! SetAutopep8()
     let g:autopep8_pep8_passes = 119
     let g:autopep8_disable_show_diff = 1
     call plug#load('vim-autopep8')
-    autocmd BufWritePre *.py call Autopep8()
+    autocmd BufWritePre *.py silent call Autopep8()
   endif
 endfunction
 function! SetPython()
