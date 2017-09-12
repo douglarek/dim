@@ -24,12 +24,6 @@ Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-function! BuildYCM(info)
-  if a:info.status == 'installed' || a:info.force
-    !./install.py --clang-completer --gocode-completer --racer-completer
-  endif
-endfunction
-Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM'), 'on': [] }
 Plug 'rhysd/vim-clang-format', { 'on': [] }
 Plug 'rust-lang/rust.vim', { 'on': [] }
 Plug 'vim-syntastic/syntastic', { 'on': [] }
@@ -123,8 +117,6 @@ endfunction
 
 " clang
 function! SetClang()
-  call SetYCM()
-  nnoremap <buffer> K  :YcmCompleter GetType<CR>
   if !executable('clang-format')
     echom "clang-format is not installed"
   else
@@ -213,8 +205,6 @@ function! SetRust()
       echom "failed when rustc --print sysroot"
     endif
   endif
-  call SetYCM()
-  nnoremap <buffer> K  :YcmCompleter GetType<CR>
   let g:syntastic_rust_checkers = ['cargo']
   call SetSyntastic()
   let g:rustfmt_autosave = 1
@@ -234,7 +224,6 @@ function! SetAutopep8()
   endif
 endfunction
 function! SetPython()
-  call SetYCM()
   if !executable('flake8')
     echom "flake8 is not installed"
   else
